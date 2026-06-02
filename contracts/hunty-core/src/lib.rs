@@ -577,17 +577,9 @@ impl HuntyCore {
         Ok(hunt)
     }
 
-    fn sync_hunt_clue_counts(env: &Env, hunt_id: u64, hunt: &mut Hunt) {
-        hunt.total_clues = Storage::get_clue_counter(env, hunt_id);
-
-        let clues = Storage::list_clues_for_hunt(env, hunt_id);
-        let mut required_clues = 0;
-        for i in 0..clues.len() {
-            if clues.get(i).unwrap().is_required {
-                required_clues += 1;
-            }
-        }
-        hunt.required_clues = required_clues;
+    /// Returns the total number of hunts created by this contract.
+    pub fn get_hunt_count(env: Env) -> u64 {
+        Storage::get_hunt_counter(&env)
     }
 
     /// Sets the RewardManager contract address for cross-contract reward distribution.

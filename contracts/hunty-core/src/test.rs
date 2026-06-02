@@ -373,7 +373,7 @@ mod test {
         let title = String::from_str(&env, "Test Hunt");
         let description = String::from_str(&env, "Description");
 
-        let (start_counter, hunt_id1, counter_after_1, hunt_id2, counter_after_2) =
+        let (start_counter, hunt_id1, counter_after_1, hunt_id2, counter_after_2, hunt_count) =
             with_core_contract(&env, |env, _cid| {
                 // Verify counter starts at 0
                 let start_counter = Storage::get_hunt_counter(env);
@@ -405,6 +405,7 @@ mod test {
 
                 // Counter should be 2 after second hunt
                 let counter_after_2 = Storage::get_hunt_counter(env);
+                let hunt_count = HuntyCore::get_hunt_count(env.clone());
 
                 (
                     start_counter,
@@ -412,6 +413,7 @@ mod test {
                     counter_after_1,
                     hunt_id2,
                     counter_after_2,
+                    hunt_count,
                 )
             });
 
@@ -420,6 +422,7 @@ mod test {
         assert_eq!(hunt_id1, 1);
         assert_eq!(counter_after_2, 2);
         assert_eq!(hunt_id2, 2);
+        assert_eq!(hunt_count, 2);
     }
 
     #[test]
