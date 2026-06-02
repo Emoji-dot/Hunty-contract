@@ -1130,6 +1130,7 @@ mod test {
             hunt_id
         });
 
+        env.mock_all_auths();
         env.as_contract(&reward_manager_id, || {
             RewardManager::create_reward_pool(env.clone(), creator.clone(), hunt_id, 0).unwrap();
         });
@@ -2195,6 +2196,7 @@ mod test {
         });
 
         // Fund RewardManager pool for this hunt
+        env.mock_all_auths();
         env.as_contract(&reward_manager_id, || {
             RewardManager::create_reward_pool(env.clone(), funder.clone(), hunt_id, 0).unwrap();
         });
@@ -2383,6 +2385,7 @@ mod test {
         });
 
         // Fund RewardManager pool
+        env.mock_all_auths();
         env.as_contract(&reward_manager_id, || {
             RewardManager::create_reward_pool(env.clone(), funder.clone(), hunt_id, 0).unwrap();
         });

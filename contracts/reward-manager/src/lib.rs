@@ -101,7 +101,6 @@ impl RewardManager {
         hunt_id: u64,
         min_distribution_amount: i128,
     ) -> Result<(), RewardErrorCode> {
-        #[cfg(not(test))]
         creator.require_auth();
 
         if min_distribution_amount < 0 {
@@ -152,8 +151,6 @@ impl RewardManager {
         hunt_id: u64,
         amount: i128,
     ) -> Result<(), RewardErrorCode> {
-        #[cfg(not(test))]
-        funder.require_auth();
 
         if amount <= 0 {
             return Err(RewardErrorCode::InvalidAmount);
@@ -165,6 +162,8 @@ impl RewardManager {
         if funder != pool_config.creator {
             return Err(RewardErrorCode::Unauthorized);
         }
+
+        pool_config.creator.require_auth();
 
         let xlm_token = Storage::get_xlm_token(&env)
             .ok_or(RewardErrorCode::NotInitialized)?;
@@ -207,6 +206,7 @@ impl RewardManager {
         if creator != pool_config.creator {
             return Err(RewardErrorCode::Unauthorized);
         }
+        pool_config.creator.require_auth();
 
         let balance = Storage::get_pool_balance(&env, hunt_id);
         if balance == 0 {
@@ -480,13 +480,11 @@ impl RewardManager {
         hunt_id: u64,
         recipient: Address,
     ) -> Result<(), RewardErrorCode> {
-        #[cfg(not(test))]
-        admin.require_auth();
-
         let configured_admin = Storage::get_admin(&env).ok_or(RewardErrorCode::NotInitialized)?;
         if configured_admin != admin {
             return Err(RewardErrorCode::Unauthorized);
         }
+        configured_admin.require_auth();
 
         // Ensure the pool exists
         Storage::get_pool_config(&env, hunt_id).ok_or(RewardErrorCode::PoolNotFound)?;
